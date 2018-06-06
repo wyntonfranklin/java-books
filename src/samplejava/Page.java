@@ -9,21 +9,28 @@ package samplejava;
  *
  * @author shady
  */
-public abstract class Page {
+public class Page {
     
     private String title;
     private String content;
     private int wordCount;
     private int currentLine;
     
-    public abstract void openFile();
+
+    public Page(){
+        
+    }
+    
+    public Page(String pageTitle){
+        title = pageTitle;
+    }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setTitle(String pageTitle) {
+        title = pageTitle;
     }
 
     public String getContent() {
