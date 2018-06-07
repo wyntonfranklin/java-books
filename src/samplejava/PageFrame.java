@@ -5,28 +5,70 @@
  */
 package samplejava;
 
+import java.awt.Component;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JLabel;
+import javax.swing.JList;
+
 /**
  *
  * @author shady
  */
 public class PageFrame extends javax.swing.JFrame {
+    
+    private NoteBook bk;
+    private NoteBookPage currentpg;
 
     /**
      * Creates new form PageFrame
      */
     public PageFrame() {
         initComponents();
+        addRenderer();
+    }
+    
+    public void setComboBox(){
+        if( getBook().getModel().getSize() <=0 ){
+            NoteBookPage apge = new NoteBookPage();
+            apge.setTitle("Empty");
+            bk.addPage(apge);
+            jComboBox1.setModel(getBook().getModel());   
+        }else{
+            jComboBox1.setModel(getBook().getModel());   
+        }
     }
     
     public PageFrame(NoteBook book){
        initComponents();
-       System.out.println(book.getTitle());
+       addRenderer();
+       jComboBox1.setModel(book.getModel());
 
     }
     
+    private void addRenderer(){
+        jComboBox1.setRenderer(new DefaultListCellRenderer(){
+            @Override
+            public Component getListCellRendererComponent(JList<?> jlist, Object o, int i, boolean bln, boolean bln1) {
+               Component renderer = super.getListCellRendererComponent(jlist, o, i, bln, bln1); //To change body of generated methods, choose Tools | Templates.
+              NoteBookPage pg = ((NoteBookPage)o);
+                setText(pg.getTitle());
+               return renderer;
+            }
+            
+        });
+        
+    }
+    
     public void addTitles(NoteBook book){
-        this.bookName.setText(book.getTitle());
-        this.bookDescription.setText(book.getDescription());
+
+    }
+    
+    public void setBook(NoteBook book ){
+        this.bk = book;
+    }
+    
+    public NoteBook getBook(){
+        return this.bk;
     }
 
     /**
@@ -39,29 +81,45 @@ public class PageFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        bookName = new javax.swing.JLabel();
-        bookDescription = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        pageContent = new javax.swing.JTextArea();
         jComboBox1 = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
+        pageTitle = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        bookName.setText("jLabel1");
+        pageContent.setColumns(20);
+        pageContent.setRows(5);
+        jScrollPane1.setViewportView(pageContent);
 
-        bookDescription.setText("jLabel2");
-
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>());
+        jComboBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox1ItemStateChanged(evt);
+            }
+        });
+        jComboBox1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                pageSelection(evt);
+            }
+        });
 
         jButton1.setText("Save Page");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Page Title");
+
+        jButton2.setText("Show Page");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showPage(evt);
             }
         });
 
@@ -71,31 +129,36 @@ public class PageFrame extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(bookName, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(bookDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGap(215, 215, 215)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
+                        .addComponent(pageTitle))
+                    .addComponent(jLabel1))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(bookName)
+                    .addComponent(jButton2)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bookDescription)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pageTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -106,7 +169,9 @@ public class PageFrame extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -114,7 +179,43 @@ public class PageFrame extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+      //  NoteBook book = BookAdapter();
+      if( null == currentpg ){
+        NoteBookPage pg = new NoteBookPage();
+        pg.setTitle(pageTitle.getText());
+        pg.setContent(pageContent.getText());
+        NoteBook book = getBook();
+        book.addPage(pg);
+        book.listOfPageTitles();
+        pageTitle.setText("");
+        pageContent.setText("");   
+      }else{
+        currentpg.setTitle(pageTitle.getText());
+        currentpg.setContent(pageContent.getText());
+        getBook().listOfPageTitles();
+      }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void pageSelection(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_pageSelection
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_pageSelection
+
+    private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
+        // TODO add your handling code here:
+   
+    }//GEN-LAST:event_jComboBox1ItemStateChanged
+
+    private void showPage(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showPage
+        // TODO add your handling code here:
+               NoteBookPage pg = (NoteBookPage)jComboBox1.getSelectedItem();
+        if( null != pg ){       
+            pageTitle.setText(pg.getTitle());
+            pageContent.setText(pg.getContent());
+            currentpg = pg;
+            //jComboBox1.setSelectedIndex(0);
+        }
+    }//GEN-LAST:event_showPage
 
     /**
      * @param args the command line arguments
@@ -152,12 +253,13 @@ public class PageFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel bookDescription;
-    private javax.swing.JLabel bookName;
     private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JComboBox<NoteBookPage> jComboBox1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea pageContent;
+    private javax.swing.JTextField pageTitle;
     // End of variables declaration//GEN-END:variables
 }
