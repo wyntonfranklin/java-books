@@ -37,24 +37,24 @@ public class Page {
         return content;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setContent(String pageContent) {
+        content = pageContent;
     }
 
     public int getWordCount() {
         return wordCount;
     }
 
-    public void setWordCount(int wordCount) {
-        this.wordCount = wordCount;
+    public void setWordCount(int pageWordCount) {
+        wordCount = pageWordCount;
     }
 
     public int getCurrentLine() {
         return currentLine;
     }
 
-    public void setCurrentLine(int currentLine) {
-        this.currentLine = currentLine;
+    public void setCurrentLine(int pageCurrentLine) {
+        currentLine = pageCurrentLine;
     }
     
     
