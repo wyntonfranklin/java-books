@@ -20,6 +20,8 @@ import javax.swing.WindowConstants;
  * @author shady
  */
 public class NoteBookFrame extends javax.swing.JFrame {
+    
+    private NoteBook currentBook;
 
     /**
      * Creates new form NoteBookFrame
@@ -27,6 +29,7 @@ public class NoteBookFrame extends javax.swing.JFrame {
     public NoteBookFrame() {
         initComponents();
         addRenderer();
+        BookAdapter.addBook(new NoteBook("New Book"));
         this.jList1.setModel(BookAdapter.getModel());
        
     }
@@ -38,7 +41,7 @@ public class NoteBookFrame extends javax.swing.JFrame {
             public Component getListCellRendererComponent(JList<?> jlist, Object o, int i, boolean bln, boolean bln1) {
                 Component renderer = super.getListCellRendererComponent(jlist, o, i, bln, bln1); 
                 NoteBook book = ((NoteBook)o);
-                ((JLabel) renderer).setText(book.getId()+" "+book.getTitle());
+                ((JLabel) renderer).setText(book.getTitle());
                 return renderer;
             }
             
@@ -66,6 +69,7 @@ public class NoteBookFrame extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         bookDescBox = new javax.swing.JTextArea();
         saveBook = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -75,7 +79,7 @@ public class NoteBookFrame extends javax.swing.JFrame {
 
         jList1.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                jList1ValueChanged(evt);
+                selectBook(evt);
             }
         });
         jScrollPane4.setViewportView(jList1);
@@ -119,7 +123,14 @@ public class NoteBookFrame extends javax.swing.JFrame {
         saveBook.setText("Save Book");
         saveBook.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveBookActionPerformed(evt);
+                saveBook(evt);
+            }
+        });
+
+        jButton1.setText("Open Book");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openBook(evt);
             }
         });
 
@@ -129,32 +140,35 @@ public class NoteBookFrame extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(26, 26, 26)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel4)
-                    .addComponent(jLabel5))
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(90, 90, 90)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-                    .addComponent(bookNameBox)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(saveBook, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                    .addComponent(bookNameBox))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(bookNameBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(39, 39, 39)
+                .addGap(28, 28, 28)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(saveBook)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(43, 43, 43))
         );
 
         jMenu1.setText("File");
@@ -215,37 +229,58 @@ public class NoteBookFrame extends javax.swing.JFrame {
        bk.setVisible(true);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
-    private void saveBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBookActionPerformed
+    private void saveBook(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBook
         // TODO add your handling code here:
-        NoteBook book = new NoteBook(this.bookNameBox.getText());
-        book.setDescription(bookDescBox.getText());
-        BookAdapter.addBook(book);
-        System.out.println("Done"); 
-       // BookAdapter.showAllBookNames();
-       this.jList1.revalidate();
-        this.bookNameBox.setText("");
-        this.bookDescBox.setText("");
+        if(null == currentBook){
+            NoteBook book = new NoteBook(bookNameBox.getText());
+            book.setDescription(bookDescBox.getText());
+            BookAdapter.addBook(book);
+            jList1.revalidate();
+            bookNameBox.setText("");
+            bookDescBox.setText("");   
+        }else{
+            NoteBook book = currentBook;
+            book.setTitle(bookNameBox.getText());
+            book.setDescription(bookDescBox.getText());
+            jList1.revalidate();
+        }
+        //System.out.println(book.toString());
            
-    }//GEN-LAST:event_saveBookActionPerformed
+    }//GEN-LAST:event_saveBook
 
     private void bookNameBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bookNameBoxActionPerformed
         // TODO add your handling code here:
   
     }//GEN-LAST:event_bookNameBoxActionPerformed
 
-    private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
+    private void selectBook(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_selectBook
         // TODO add your handling code here:
         
         if (!evt.getValueIsAdjusting()) {//This line prevents double events
-             NoteBook bk = this.jList1.getSelectedValue();
-            //System.out.println(bk.getTitle());
+             NoteBook bk = jList1.getSelectedValue();
+             if(!bk.getTitle().equalsIgnoreCase("New Book")){
+                //System.out.println(bk.getTitle());
+                currentBook = bk;
+                bookNameBox.setText(bk.getTitle());
+                bookDescBox.setText(bk.getDescription());   
+             }else{
+                 bookNameBox.setText("");
+                bookDescBox.setText("");     
+             }
+        }
+    }//GEN-LAST:event_selectBook
+
+    private void openBook(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openBook
+        // TODO add your handling code here:
+            NoteBook bk = jList1.getSelectedValue();
             PageFrame pg = new PageFrame();
             pg.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             pg.setTitle("Page");
             pg.addTitles(bk);
             pg.setVisible(true);
-        }
-    }//GEN-LAST:event_jList1ValueChanged
+            pg.setBook(bk);
+            pg.setComboBox();   
+    }//GEN-LAST:event_openBook
 
     /**
      * @param args the command line arguments
@@ -285,6 +320,7 @@ public class NoteBookFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea bookDescBox;
     private javax.swing.JTextField bookNameBox;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
