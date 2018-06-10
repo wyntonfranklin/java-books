@@ -57,6 +57,10 @@ public class Page {
         currentLine = pageCurrentLine;
     }
     
+    public void createTextFile(){
+        
+    }
+    
     
     
 }

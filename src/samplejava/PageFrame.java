@@ -32,16 +32,16 @@ public class PageFrame extends javax.swing.JFrame {
             NoteBookPage apge = new NoteBookPage();
             apge.setTitle("Empty");
             bk.addPage(apge);
-            jComboBox1.setModel(getBook().getModel());   
+          //  jComboBox1.setModel(getBook().getModel());   
         }else{
-            jComboBox1.setModel(getBook().getModel());   
+           // jComboBox1.setModel(getBook().getModel());   
         }
     }
     
     public PageFrame(NoteBook book){
        initComponents();
        addRenderer();
-       jComboBox1.setModel(book.getModel());
+      // jComboBox1.setModel(book.getModel());
 
     }
     

@@ -16,66 +16,19 @@ public class NoteBookPage extends Page {
     private int wordCount;
     private int currentLine;
     
+    
     public NoteBookPage(){
-        
+        super();
     }
     
-    public NoteBookPage( String title ){
-        this.title = title;
-    }
-    
-    public NoteBookPage(String title, String filename ){
-        this.title = title;
+    public NoteBookPage( String pageTitle ){
+        super(pageTitle);
+        title = pageTitle;
     }
     
     public void setContentViaFile( String filename ){
         
     }
 
-    @Override
-    public void setCurrentLine(int currentLine) {
-        super.setCurrentLine(currentLine); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public int getCurrentLine() {
-        return super.getCurrentLine(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setWordCount(int wordCount) {
-        super.setWordCount(wordCount); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public int getWordCount() {
-        return super.getWordCount(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setContent(String content) {
-        super.setContent(content); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public String getContent() {
-        return super.getContent(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setTitle(String title) {
-        super.setTitle(title); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public String getTitle() {
-        return super.getTitle(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void openFile() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    
+      
 }

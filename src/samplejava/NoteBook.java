@@ -6,6 +6,7 @@
 package samplejava;
 
 import java.util.ArrayList;
+import javax.swing.DefaultListModel;
 
 /**
  *
@@ -19,48 +20,54 @@ public class NoteBook {
     private int sections;
     private String description;
     ArrayList<NoteBookPage> mypages;
+    DefaultListModel<NoteBookPage> model = new DefaultListModel<>();
+    private static int books=1;
     
+   
 
     public NoteBook(String name){
-        this.title = name;
-        this.mypages =  new ArrayList<>();
-        this.id = BookAdapter.currentId();
+        title = name;
+        mypages =  new ArrayList<>();
+        id = BookAdapter.currentId();
+        NoteBook.books =+ 1;
     }
     
-    public NoteBook( String name, int pages, int sections ){
-        this.title = name;
-        this.pages = pages;
-        this.sections = sections;
-        this.id = BookAdapter.currentId();
+    public NoteBook( String name, int bkPages, int bkSections ){
+        title = name;
+        pages = bkPages;
+        sections = bkSections;
+        id = BookAdapter.currentId();
+        NoteBook.books =+ 1;
     }
     
     public NoteBook(){
-        this.mypages =  new ArrayList<>();
-        this.id = BookAdapter.currentId();
+        mypages =  new ArrayList<>();
+        id = BookAdapter.currentId();
+        NoteBook.books =+ 1;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setTitle(String bkTitle) {
+        title = bkTitle;
     }
 
     public int getPages() {
         return pages;
     }
 
-    public void setPages(int pages) {
-        this.pages = pages;
+    public void setPages(int bkPages) {
+        pages = bkPages;
     }
 
     public int getSections() {
         return sections;
     }
 
-    public void setSections(int sections) {
-        this.sections = sections;
+    public void setSections(int bkSections) {
+        sections = bkSections;
     }
     
     public boolean addPageViaFile( String filename ){
@@ -68,8 +75,13 @@ public class NoteBook {
     }
     
     public boolean addPage( NoteBookPage page ){
-        this.mypages.add(page);
+        mypages.add(page);
+        model.addElement(page);
         return true;
+    }
+    
+    public DefaultListModel<NoteBookPage> getModel(){
+        return model;
     }
     
     public boolean addPage(String title, String content ){
@@ -93,17 +105,25 @@ public class NoteBook {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescription(String bkDescription) {
+         description = bkDescription;
     }
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int bookid) {
+        id = bookid;
     }
+    
+   public void addBook(){
+       NoteBook.books =+ 1;
+   }
+   
+   public int getBooks(){
+       return NoteBook.books;
+   }
     
  
     
