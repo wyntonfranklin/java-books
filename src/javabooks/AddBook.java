@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package samplejava;
+package javabooks;
 
 /**
  *
@@ -95,7 +95,9 @@ public class AddBook extends javax.swing.JDialog {
         NoteBook createbook = new NoteBook();
         createbook.setTitle(book_name.getText());
         createbook.setDescription(book_description.getText());
-        BookAdapter.addBook(createbook);
+        createbook.insertBook();
+        BookAdapter.Refresh();
+        setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

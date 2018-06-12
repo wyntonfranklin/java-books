@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package samplejava;
+package javabooks;
+
+import java.sql.ResultSet;
 
 /**
  *
@@ -11,10 +13,12 @@ package samplejava;
  */
 public class NoteBookPage extends Page {
     
+    private int id;
     private String title;
     private String content;
     private int wordCount;
     private int currentLine;
+    private int bookRef;
     
     
     public NoteBookPage(){
@@ -25,6 +29,12 @@ public class NoteBookPage extends Page {
         super(pageTitle);
         title = pageTitle;
     }
+
+    public NoteBookPage(ResultSet column) {
+        super(column);
+    }
+    
+    
     
     public void setContentViaFile( String filename ){
         

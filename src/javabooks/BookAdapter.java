@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package samplejava;
+package javabooks;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 
@@ -42,7 +43,14 @@ public class BookAdapter {
     }
     
     public static DefaultListModel<NoteBook> getModel(){
+        BookAdapter.loadAllBooks();
         return BookAdapter.model;
+    }
+    
+    public static void Refresh(){
+        BookAdapter.model.clear();
+        BookAdapter.allbooks.clear();
+        BookAdapter.loadAllBooks(); 
     }
     
     public static int currentId(){
@@ -51,6 +59,21 @@ public class BookAdapter {
     
     public static void addId(){
         BookAdapter.id += 1;
+    }
+    
+    public static void loadAllBooks(){
+        Db db = new Db();
+        ResultSet books = db.queryAll("Select * from books");
+        try{
+            while(books.next()){
+                NoteBook bk = new NoteBook(books);
+                bk.loadAllPages();
+                BookAdapter.addBook(bk);
+            }   
+        }catch(Exception e){
+            
+        }
+        db.closeConnetion();
     }
     
     

@@ -1,13 +1,15 @@
-package samplejava;
+package javabooks;
 
 import java.awt.Component;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
-import javax.swing.JFrame;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.WindowConstants;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -30,7 +32,6 @@ public class NoteBookFrame extends javax.swing.JFrame {
     public NoteBookFrame() {
         initComponents();
         addRenderer();
-        //BookAdapter.addBook(new NoteBook("New Book"));
         this.booksList.setModel(BookAdapter.getModel());
        
     }
@@ -76,30 +77,46 @@ public class NoteBookFrame extends javax.swing.JFrame {
     }
     
     private void savePage(){
-        NoteBookPage pg = null;
+        NoteBookPage pg;
         Boolean isnewpage = false;
-        if( currentPage == null ){
-            isnewpage = true;
-            pg = new NoteBookPage();
-            pg.setTitle(pageTitle.getText());
-            pg.setContent(pageContent.getText());
-        }else{
-            pg = currentPage; 
-            pg.setTitle(pageTitle.getText());
-            pg.setContent(pageContent.getText());
-        } 
-        if( currentBook == null ){
-            NoteBook bk = new NoteBook("Default Book");
+        if(currentBook != null ){
+            if( currentPage == null ){
+                isnewpage = true;
+                pg = new NoteBookPage();
+                pg.setTitle(pageTitle.getText());
+                pg.setContent(pageContent.getText());
+                currentBook.createPage(pg); 
+            }else{
+                pg = currentPage; 
+                pg.setTitle(pageTitle.getText());
+                pg.setContent(pageContent.getText()); 
+                pg.updatePage();
+            } 
             if(isnewpage){
-                bk.addPage(pg);   
+                clearPageForm();
             }
-            currentBook = bk;
-            BookAdapter.addBook(bk);
-        }else{
-            if(isnewpage){
-                currentBook.addPage(pg);   
-            }
+            updatePages();
         }
+    }
+    
+    public File getTextFileDirectory(){
+        JFileChooser chooser = new JFileChooser(); 
+        chooser.setCurrentDirectory(new java.io.File("."));
+        chooser.setDialogTitle("Select File Location");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) { 
+              return chooser.getCurrentDirectory();    
+        }
+        return null;
+    }
+    
+    public void updatePages(){
+        pagesList.setModel(currentBook.updateModel());
+    }
+    
+    public void updateBooks(){
+        
     }
 
     /**
@@ -123,7 +140,7 @@ public class NoteBookFrame extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         newPageButton = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        createFile = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         pagesList = new javax.swing.JList<>();
@@ -194,10 +211,10 @@ public class NoteBookFrame extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Create File");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        createFile.setText("Create File");
+        createFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                createFileActionPerformed(evt);
             }
         });
 
@@ -218,7 +235,7 @@ public class NoteBookFrame extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(newPageButton)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton1))
+                                .addComponent(createFile))
                             .addComponent(pageTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 589, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(8, 8, 8))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 597, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -231,7 +248,7 @@ public class NoteBookFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(newPageButton)
-                    .addComponent(jButton1))
+                    .addComponent(createFile))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -361,23 +378,12 @@ public class NoteBookFrame extends javax.swing.JFrame {
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
-       PageDialog bk = new PageDialog(this, true);
-       bk.setVisible(true);
+
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void selectBook(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_selectBook
         // TODO add your handling code here:
         
-        if (!evt.getValueIsAdjusting()) {//This line prevents double events
-             NoteBook bk = booksList.getSelectedValue();
-             if(!bk.getTitle().equalsIgnoreCase("New Book")){
-                //System.out.println(bk.getTitle());
-                currentBook = bk;  
-             }else{
-
-                currentBook = null;
-             }
-        }
     }//GEN-LAST:event_selectBook
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
@@ -401,6 +407,8 @@ public class NoteBookFrame extends javax.swing.JFrame {
         if( evt.getClickCount() == 2 ){
             NoteBook bk = booksList.getSelectedValue();
             currentBook = bk;
+           // currentBook.loadAllPages();
+            setTitle("Books - " + bk.getTitle());
             pagesList.setModel(currentBook.getModel());
             clearPageForm();
         }
@@ -408,10 +416,12 @@ public class NoteBookFrame extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        savePage();
-        clearPageForm();
-        booksList.validate();
-        pagesList.validate();
+        if(currentBook != null ){
+            savePage();
+
+        }else{
+            JOptionPane.showMessageDialog(this, "No book selected");
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void pagesListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pagesListMouseClicked
@@ -424,9 +434,23 @@ public class NoteBookFrame extends javax.swing.JFrame {
            }
     }//GEN-LAST:event_pagesListMouseClicked
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void createFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createFileActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        if(currentPage != null ){
+           String filelocation = getTextFileDirectory().toString();
+           System.out.println(filelocation);
+           if(filelocation != null){
+               try {
+                   String newFile = filelocation +
+                           File.separator + currentPage.getTitle();
+                   System.out.println(newFile);
+                   currentPage.createTextFile(newFile);
+               } catch (IOException ex) {
+                   Logger.getLogger(NoteBookFrame.class.getName()).log(Level.SEVERE, null, ex);
+               }
+           }
+        }
+    }//GEN-LAST:event_createFileActionPerformed
 
     /**
      * @param args the command line arguments
@@ -465,7 +489,7 @@ public class NoteBookFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList<NoteBook> booksList;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton createFile;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

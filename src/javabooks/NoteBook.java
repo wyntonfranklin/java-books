@@ -3,9 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package samplejava;
+package javabooks;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 
 /**
@@ -28,7 +33,7 @@ public class NoteBook {
     public NoteBook(String name){
         title = name;
         mypages =  new ArrayList<>();
-        id = BookAdapter.currentId();
+      //  id = BookAdapter.currentId();
         NoteBook.books =+ 1;
     }
     
@@ -36,14 +41,26 @@ public class NoteBook {
         title = name;
         pages = bkPages;
         sections = bkSections;
-        id = BookAdapter.currentId();
+     //   id = BookAdapter.currentId();
         NoteBook.books =+ 1;
     }
     
     public NoteBook(){
         mypages =  new ArrayList<>();
-        id = BookAdapter.currentId();
+       // id = BookAdapter.currentId();
         NoteBook.books =+ 1;
+    }
+    
+    public NoteBook( ResultSet column ){
+        try{
+            id = column.getInt("id");
+            title = column.getString("book_name");
+            description = column.getString("description");
+        }catch(Exception e){
+            
+        }
+        mypages =  new ArrayList<>();
+       // id = BookAdapter.currentId();
     }
 
     public String getTitle() {
@@ -74,29 +91,60 @@ public class NoteBook {
        return true; 
     }
     
+    public int getId(){
+        return id;
+    }
+    
     public boolean addPage( NoteBookPage page ){
         mypages.add(page);
-        model.addElement(page);
         return true;
     }
     
+    public void createPage( NoteBookPage page ){
+        page.createPage( getId() );
+    }
+    
+    
     public DefaultListModel<NoteBookPage> getModel(){
+        setModel();
         return model;
+    }
+    
+    public DefaultListModel<NoteBookPage> updateModel(){
+        loadAllPages();
+        setModel();
+        return model;
+    }
+    
+    public void loadAllPages(){
+        mypages.clear();
+        Db db = new Db();
+        System.out.println(getId());
+        ResultSet pagesResults = db.queryAll("SELECT * FROM pages WHERE book_id="+getId());
+        try{
+            while(pagesResults.next()){
+                NoteBookPage pg = new NoteBookPage(pagesResults);
+                addPage(pg);
+            }   
+        }catch(SQLException e){
+           // System.out.println(e.getMessage());
+        }
+       // db.closeConnetion();
     }
     
     public boolean addPage(String title, String content ){
         NoteBookPage page = new NoteBookPage();
         page.setTitle(title);
         page.setContent(content);
-        this.mypages.add(page);
+        mypages.add(page);
         return true;
     }
     
-    public void listOfPageTitles(){
-        ArrayList<NoteBookPage> pages = this.mypages;
-        System.out.println("Book Name :" + this.title +"\n");
+    public void setModel(){
+        model.clear();
+        ArrayList<NoteBookPage> pages = mypages;
         for(int i=0; i<pages.size(); i++){
-            System.out.println(pages.get(i).getTitle());
+            model.addElement(pages.get(i));
         }
         
     }
@@ -109,9 +157,6 @@ public class NoteBook {
          description = bkDescription;
     }
 
-    public int getId() {
-        return id;
-    }
 
     public void setId(int bookid) {
         id = bookid;
@@ -123,6 +168,19 @@ public class NoteBook {
    
    public int getBooks(){
        return NoteBook.books;
+   }
+   
+   public void insertBook(){
+       Db db = new Db();
+       String sql = "INSERT INTO books (book_name, description) values(?,?)";
+        try {
+            PreparedStatement ps = db.getConnection().prepareStatement(sql);
+            ps.setString(1,title);
+            ps.setString(2,description);
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(NoteBook.class.getName()).log(Level.SEVERE, null, ex);
+        }
    }
     
  
