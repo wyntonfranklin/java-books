@@ -189,6 +189,10 @@
                                   <Component id="newPageButton" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Component id="createFile" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="startServer" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Component id="pageTitle" min="-2" pref="589" max="-2" attributes="0"/>
                           </Group>
@@ -208,6 +212,8 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="newPageButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="createFile" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="startServer" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -277,6 +283,19 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="createFileActionPerformed"/>
           </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="startServer">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Start Server"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="startServerActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButton1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Recieved Text (0)"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>

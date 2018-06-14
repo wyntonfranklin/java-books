@@ -10,6 +10,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -141,6 +142,8 @@ public class NoteBookFrame extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         newPageButton = new javax.swing.JButton();
         createFile = new javax.swing.JButton();
+        startServer = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         pagesList = new javax.swing.JList<>();
@@ -218,6 +221,15 @@ public class NoteBookFrame extends javax.swing.JFrame {
             }
         });
 
+        startServer.setText("Start Server");
+        startServer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startServerActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("Recieved Text (0)");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -235,7 +247,11 @@ public class NoteBookFrame extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(newPageButton)
                                 .addGap(18, 18, 18)
-                                .addComponent(createFile))
+                                .addComponent(createFile)
+                                .addGap(18, 18, 18)
+                                .addComponent(startServer)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton1))
                             .addComponent(pageTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 589, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(8, 8, 8))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 597, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -248,7 +264,9 @@ public class NoteBookFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(newPageButton)
-                    .addComponent(createFile))
+                    .addComponent(createFile)
+                    .addComponent(startServer)
+                    .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -452,6 +470,11 @@ public class NoteBookFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_createFileActionPerformed
 
+    private void startServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startServerActionPerformed
+        // TODO add your handling code here:
+        new Server().start();
+    }//GEN-LAST:event_startServerActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -490,6 +513,7 @@ public class NoteBookFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList<NoteBook> booksList;
     private javax.swing.JButton createFile;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -514,5 +538,6 @@ public class NoteBookFrame extends javax.swing.JFrame {
     private javax.swing.JTextArea pageContent;
     private javax.swing.JTextField pageTitle;
     private javax.swing.JList<NoteBookPage> pagesList;
+    private javax.swing.JButton startServer;
     // End of variables declaration//GEN-END:variables
 }
