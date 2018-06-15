@@ -119,7 +119,6 @@ public class NoteBook {
     public void loadAllPages(){
         mypages.clear();
         Db db = new Db();
-        System.out.println(getId());
         ResultSet pagesResults = db.queryAll("SELECT * FROM pages WHERE book_id="+getId());
         try{
             while(pagesResults.next()){

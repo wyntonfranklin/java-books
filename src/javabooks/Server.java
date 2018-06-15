@@ -25,9 +25,14 @@ public class Server extends Thread{
     private OutputStream output; // output stream to client
     private InputStream input; // input stream from client
     private int counter = 1; // counter of number of connections
+    private NoteBookFrame notebook;
     
     public Server(){
         
+    }
+    
+    public Server( NoteBookFrame bk ){
+        notebook = bk;
     }
     
     @Override
@@ -89,6 +94,7 @@ public class Server extends Thread{
                  BufferedReader br = new BufferedReader(new InputStreamReader(input));
                 while ((message = br.readLine()) != null) {
                     System.out.println("Message received:" + message);
+                    sendRecievedText(message);
                     message += '\n';
                     output.write(message.getBytes());
                  }
@@ -117,6 +123,10 @@ public class Server extends Thread{
     
     private void sendData( String message ){
         
+    }
+    
+    private void sendRecievedText( String text ){
+        notebook.addSharedText(text);
     }
 
     
